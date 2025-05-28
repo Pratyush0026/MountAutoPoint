@@ -1,7 +1,8 @@
 "use client";
 
 import type React from "react";
-
+import emailjs from "@emailjs/browser";
+import { AlertCircle, Loader2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -61,6 +62,10 @@ export default function Home() {
   const { scrollYProgress } = useScroll();
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 10) {
@@ -73,12 +78,6 @@ export default function Home() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormSubmitted(true);
-    // In a real application, you would send the form data to a server here
-  };
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 60 },
@@ -111,6 +110,116 @@ export default function Home() {
       return () => clearInterval(interval);
     }
   }, [isPlaying]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    // Check if form ref exists
+    if (!formRef.current) {
+      setError("Form reference error. Please try again.");
+      setIsLoading(false);
+      return;
+    }
+
+    // EmailJS configuration with your actual IDs
+    const SERVICE_ID = "service_ivyzrt7";
+    const TEMPLATE_ID = "template_dhnva85";
+    const PUBLIC_KEY = "_yn9wfzdCtkZOmUQj";
+
+    try {
+      // Get current date and time for India timezone
+      const now = new Date();
+      const time = now.toLocaleString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      });
+
+      // Prepare form data for EmailJS with null check
+      const formData = new FormData(formRef.current);
+      const templateParams = {
+        name: formData.get("name") as string,
+        email: formData.get("email") as string,
+        phone: formData.get("phone") as string,
+        message: formData.get("message") as string,
+        time: time,
+      };
+
+      // Send email via EmailJS
+      const result = await emailjs.send(
+        SERVICE_ID,
+        TEMPLATE_ID,
+        templateParams,
+        PUBLIC_KEY
+      );
+
+      if (result.status === 200) {
+        setFormSubmitted(true);
+        // Reset form with null check
+        if (formRef.current) {
+          formRef.current.reset();
+        }
+        console.log("Email sent successfully!");
+      }
+    } catch (error) {
+      console.error("EmailJS Error:", error);
+      setError(
+        "Failed to send message. Please try calling us directly at 080776 86758 or use WhatsApp."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // STEP 4: Alternative approach using emailjs.sendForm (simpler)
+  const handleSubmitAlternative = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    // Check if form ref exists
+    if (!formRef.current) {
+      setError("Form reference error. Please try again.");
+      setIsLoading(false);
+      return;
+    }
+
+    // EmailJS configuration
+    const SERVICE_ID = "service_ivyzrt7";
+    const TEMPLATE_ID = "template_3wy1y1i";
+    const PUBLIC_KEY = "_yn9wfzdCtkZOmUQj";
+
+    try {
+      // This method sends the form directly without manual data extraction
+      const result = await emailjs.sendForm(
+        SERVICE_ID,
+        TEMPLATE_ID,
+        formRef.current,
+        PUBLIC_KEY
+      );
+
+      if (result.status === 200) {
+        setFormSubmitted(true);
+        formRef.current.reset();
+        console.log("Email sent successfully!");
+      }
+    } catch (error) {
+      console.error("EmailJS Error:", error);
+      setError(
+        "Failed to send message. Please try calling us directly at 080776 86758 or use WhatsApp."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white">
@@ -1270,28 +1379,105 @@ export default function Home() {
                     </p>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-6">
+                  // <form onSubmit={handleSubmit} className="space-y-6">
+                  //   <div className="grid md:grid-cols-2 gap-6">
+                  //     <div>
+                  //       <label
+                  //         htmlFor="name"
+                  //         className="block text-sm font-medium text-gray-700 mb-1"
+                  //       >
+                  //         Your Name
+                  //       </label>
+                  //       <Input id="name" placeholder="John Doe" required />
+                  //     </div>
+                  //     <div>
+                  //       <label
+                  //         htmlFor="phone"
+                  //         className="block text-sm font-medium text-gray-700 mb-1"
+                  //       >
+                  //         Phone Number
+                  //       </label>
+                  //       <Input
+                  //         id="phone"
+                  //         placeholder="Your phone number"
+                  //         required
+                  //       />
+                  //     </div>
+                  //   </div>
+                  //   <div>
+                  //     <label
+                  //       htmlFor="email"
+                  //       className="block text-sm font-medium text-gray-700 mb-1"
+                  //     >
+                  //       Email Address
+                  //     </label>
+                  //     <Input
+                  //       id="email"
+                  //       type="email"
+                  //       placeholder="you@example.com"
+                  //       required
+                  //     />
+                  //   </div>
+                  //   <div>
+                  //     <label
+                  //       htmlFor="message"
+                  //       className="block text-sm font-medium text-gray-700 mb-1"
+                  //     >
+                  //       Your Message
+                  //     </label>
+                  //     <Textarea
+                  //       id="message"
+                  //       placeholder="Tell us about your rental needs..."
+                  //       rows={4}
+                  //       className="resize-none"
+                  //       required
+                  //     />
+                  //   </div>
+                  //   <Button
+                  //     type="submit"
+                  //     className="w-full bg-gradient-to-r from-sky-500 to-yellow-400 hover:opacity-90 transition-opacity"
+                  //   >
+                  //     Send Message
+                  //     <Send className="h-4 w-4 ml-2" />
+                  //   </Button>
+                  // </form>
+                  <form
+                    ref={formRef}
+                    onSubmit={handleSubmit} 
+                    className="space-y-6"
+                  >
                     <div className="grid md:grid-cols-2 gap-6">
                       <div>
                         <label
                           htmlFor="name"
                           className="block text-sm font-medium text-gray-700 mb-1"
                         >
-                          Your Name
+                          Your Name *
                         </label>
-                        <Input id="name" placeholder="John Doe" required />
+                        <Input
+                          id="name"
+                          name="name"
+                          placeholder="John Doe"
+                          required
+                          disabled={isLoading}
+                          className="disabled:opacity-50"
+                        />
                       </div>
                       <div>
                         <label
                           htmlFor="phone"
                           className="block text-sm font-medium text-gray-700 mb-1"
                         >
-                          Phone Number
+                          Phone Number *
                         </label>
                         <Input
                           id="phone"
-                          placeholder="Your phone number"
+                          name="phone"
+                          type="tel"
+                          placeholder="+91 98765 43210"
                           required
+                          disabled={isLoading}
+                          className="disabled:opacity-50"
                         />
                       </div>
                     </div>
@@ -1300,13 +1486,16 @@ export default function Home() {
                         htmlFor="email"
                         className="block text-sm font-medium text-gray-700 mb-1"
                       >
-                        Email Address
+                        Email Address *
                       </label>
                       <Input
                         id="email"
+                        name="email"
                         type="email"
                         placeholder="you@example.com"
                         required
+                        disabled={isLoading}
+                        className="disabled:opacity-50"
                       />
                     </div>
                     <div>
@@ -1314,23 +1503,39 @@ export default function Home() {
                         htmlFor="message"
                         className="block text-sm font-medium text-gray-700 mb-1"
                       >
-                        Your Message
+                        Your Message *
                       </label>
                       <Textarea
                         id="message"
-                        placeholder="Tell us about your rental needs..."
+                        name="message"
+                        placeholder="Tell us about your rental needs - dates, vehicle type, destination, etc."
                         rows={4}
-                        className="resize-none"
+                        className="resize-none disabled:opacity-50"
                         required
+                        disabled={isLoading}
                       />
                     </div>
                     <Button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-sky-500 to-yellow-400 hover:opacity-90 transition-opacity"
+                      disabled={isLoading}
+                      className="w-full bg-gradient-to-r from-sky-500 to-yellow-400 hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Send Message
-                      <Send className="h-4 w-4 ml-2" />
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Sending Message...
+                        </>
+                      ) : (
+                        <>
+                          Send Message
+                          <Send className="h-4 w-4 ml-2" />
+                        </>
+                      )}
                     </Button>
+                    <p className="text-xs text-gray-500 text-center">
+                      * Required fields. We'll respond within 2 hours during
+                      business hours.
+                    </p>
                   </form>
                 )}
               </div>
