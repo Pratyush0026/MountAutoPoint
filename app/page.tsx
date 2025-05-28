@@ -1,13 +1,23 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect, useRef } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { motion, useScroll, useTransform, useInView } from "framer-motion"
+import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useInView,
+  AnimatePresence,
+} from "framer-motion";
+
 import {
   ChevronRight,
+  ChevronLeft,
+  Play,
+  Pause,
   MapPin,
   Clock,
   Shield,
@@ -23,52 +33,52 @@ import {
   CheckCircle,
   Mountain,
   Map,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function Home() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [formSubmitted, setFormSubmitted] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const heroRef = useRef(null)
-  const isHeroInView = useInView(heroRef, { once: true })
+  const heroRef = useRef(null);
+  const isHeroInView = useInView(heroRef, { once: true });
 
-  const featuresRef = useRef(null)
-  const isFeaturesInView = useInView(featuresRef, { once: true })
+  const featuresRef = useRef(null);
+  const isFeaturesInView = useInView(featuresRef, { once: true });
 
-  const testimonialsRef = useRef(null)
-  const isTestimonialsInView = useInView(testimonialsRef, { once: true })
+  const testimonialsRef = useRef(null);
+  const isTestimonialsInView = useInView(testimonialsRef, { once: true });
 
-  const pricingRef = useRef(null)
-  const isPricingInView = useInView(pricingRef, { once: true })
+  const pricingRef = useRef(null);
+  const isPricingInView = useInView(pricingRef, { once: true });
 
-  const contactRef = useRef(null)
-  const isContactInView = useInView(contactRef, { once: true })
+  const contactRef = useRef(null);
+  const isContactInView = useInView(contactRef, { once: true });
 
-  const { scrollYProgress } = useScroll()
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
+  const { scrollYProgress } = useScroll();
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 10) {
-        setIsScrolled(true)
+        setIsScrolled(true);
       } else {
-        setIsScrolled(false)
+        setIsScrolled(false);
       }
-    }
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setFormSubmitted(true)
+    e.preventDefault();
+    setFormSubmitted(true);
     // In a real application, you would send the form data to a server here
-  }
+  };
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 60 },
@@ -77,7 +87,7 @@ export default function Home() {
       y: 0,
       transition: { duration: 0.6 },
     },
-  }
+  };
 
   const staggerContainer = {
     hidden: { opacity: 0 },
@@ -87,14 +97,29 @@ export default function Home() {
         staggerChildren: 0.2,
       },
     },
-  }
+  };
+
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState<boolean>(true);
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (isPlaying) {
+      const interval = setInterval(() => {
+        setCurrentIndex((prev) => (prev === 8 ? 0 : prev + 1));
+      }, 4000);
+      return () => clearInterval(interval);
+    }
+  }, [isPlaying]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white">
       {/* Header */}
       <header
         className={`fixed w-full z-50 transition-all duration-300 ${
-          isScrolled ? "bg-white/90 backdrop-blur-md shadow-md py-3" : "bg-transparent py-5"
+          isScrolled
+            ? "bg-blue-200 backdrop-blur-md shadow-md py-3"
+            : "bg-transparent py-5"
         }`}
       >
         <div className="container mx-auto px-4 flex justify-between items-center">
@@ -109,19 +134,34 @@ export default function Home() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            <Link href="#" className="text-gray-700 hover:text-sky-600 transition-colors">
+            <Link
+              href="#"
+              className="text-gray-700 hover:text-sky-600 transition-colors"
+            >
               Home
             </Link>
-            <Link href="#features" className="text-gray-700 hover:text-sky-600 transition-colors">
+            <Link
+              href="#features"
+              className="text-gray-700 hover:text-sky-600 transition-colors"
+            >
               Features
             </Link>
-            <Link href="#testimonials" className="text-gray-700 hover:text-sky-600 transition-colors">
+            <Link
+              href="#testimonials"
+              className="text-gray-700 hover:text-sky-600 transition-colors"
+            >
               Testimonials
             </Link>
-            <Link href="#pricing" className="text-gray-700 hover:text-sky-600 transition-colors">
+            <Link
+              href="#pricing"
+              className="text-gray-700 hover:text-sky-600 transition-colors"
+            >
               Pricing
             </Link>
-            <Link href="#contact" className="text-gray-700 hover:text-sky-600 transition-colors">
+            <Link
+              href="#contact"
+              className="text-gray-700 hover:text-sky-600 transition-colors"
+            >
               Contact
             </Link>
           </nav>
@@ -143,7 +183,10 @@ export default function Home() {
           </div>
 
           {/* Mobile Menu Button */}
-          <button className="md:hidden text-gray-700" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <button
+            className="md:hidden text-gray-700"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
             {mobileMenuOpen ? <X /> : <Menu />}
           </button>
         </div>
@@ -214,8 +257,14 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden" ref={heroRef}>
-        <motion.div style={{ y: backgroundY }} className="absolute inset-0 -z-10 opacity-20">
+      <section
+        className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden"
+        ref={heroRef}
+      >
+        <motion.div
+          style={{ y: backgroundY }}
+          className="absolute inset-0 -z-10 opacity-20"
+        >
           <div className="absolute top-0 left-0 right-0 h-full bg-gradient-to-b from-sky-100 to-transparent"></div>
           <div className="h-full w-full bg-[url('/placeholder.svg?height=1080&width=1920&text=Mountains')] bg-cover bg-center"></div>
         </motion.div>
@@ -233,17 +282,27 @@ export default function Home() {
                   #1 Bike & Scooter Rental in Kotdwar
                 </span>
               </motion.div>
-              <motion.h1 variants={fadeInUp} className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              <motion.h1
+                variants={fadeInUp}
+                className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
+              >
                 Explore Uttarakhand on{" "}
                 <span className="bg-gradient-to-r from-sky-600 to-yellow-500 bg-clip-text text-transparent">
                   two wheels
                 </span>
               </motion.h1>
-              <motion.p variants={fadeInUp} className="text-lg text-gray-600 md:pr-10">
-                Discover the beauty of Kotdwar, Lansdowne, Pauri and beyond with our premium bike and scooter rental
-                service. Affordable, convenient, and reliable.
+              <motion.p
+                variants={fadeInUp}
+                className="text-lg text-gray-600 md:pr-10"
+              >
+                Discover the beauty of Kotdwar, Lansdowne, Pauri and beyond with
+                our premium bike and scooter rental service. Affordable,
+                convenient, and reliable.
               </motion.p>
-              <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 mt-4">
+              <motion.div
+                variants={fadeInUp}
+                className="flex flex-col sm:flex-row gap-4 mt-4"
+              >
                 <Link
                   href="#pricing"
                   className="px-8 py-3 bg-gradient-to-r from-sky-500 to-yellow-400 text-white font-medium rounded-full hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-lg shadow-sky-200"
@@ -258,10 +317,16 @@ export default function Home() {
                   Learn More
                 </Link>
               </motion.div>
-              <motion.div variants={fadeInUp} className="flex items-center gap-4 mt-6">
+              <motion.div
+                variants={fadeInUp}
+                className="flex items-center gap-4 mt-6"
+              >
                 <div className="flex -space-x-2">
                   {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="h-10 w-10 rounded-full border-2 border-white overflow-hidden">
+                    <div
+                      key={i}
+                      className="h-10 w-10 rounded-full border-2 border-white overflow-hidden"
+                    >
                       <Image
                         src={`/placeholder.svg?height=40&width=40&text=User${i}`}
                         alt={`User ${i}`}
@@ -275,18 +340,24 @@ export default function Home() {
                 <div>
                   <div className="flex items-center gap-1">
                     {[1, 2, 3, 4, 5].map((i) => (
-                      <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <Star
+                        key={i}
+                        className="h-4 w-4 fill-yellow-400 text-yellow-400"
+                      />
                     ))}
                   </div>
                   <p className="text-sm text-gray-600">
-                    <span className="font-medium">4.9/5</span> from 200+ happy travelers
+                    <span className="font-medium">4.9/5</span> from 200+ happy
+                    travelers
                   </p>
                 </div>
               </motion.div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, x: 100 }}
-              animate={isHeroInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 100 }}
+              animate={
+                isHeroInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 100 }
+              }
               transition={{ duration: 0.8, delay: 0.2 }}
               className="relative"
             >
@@ -301,7 +372,9 @@ export default function Home() {
                 />
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
-                  animate={isHeroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  animate={
+                    isHeroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+                  }
                   transition={{ duration: 0.5, delay: 0.8 }}
                   className="absolute -bottom-6 -left-6 bg-white rounded-2xl p-4 shadow-xl"
                 >
@@ -317,7 +390,9 @@ export default function Home() {
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
-                  animate={isHeroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                  animate={
+                    isHeroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+                  }
                   transition={{ duration: 0.5, delay: 1 }}
                   className="absolute -top-6 -right-6 bg-white rounded-2xl p-4 shadow-xl"
                 >
@@ -346,15 +421,18 @@ export default function Home() {
             variants={staggerContainer}
             className="text-center max-w-3xl mx-auto mb-16"
           >
-            <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold mb-4">
+            <motion.h2
+              variants={fadeInUp}
+              className="text-3xl md:text-4xl font-bold mb-4"
+            >
               Why choose{" "}
               <span className="bg-gradient-to-r from-sky-600 to-yellow-500 bg-clip-text text-transparent">
                 Mount Auto Point
               </span>
             </motion.h2>
             <motion.p variants={fadeInUp} className="text-lg text-gray-600">
-              We offer the best rental experience with well-maintained vehicles, flexible plans, and exceptional
-              service.
+              We offer the best rental experience with well-maintained vehicles,
+              flexible plans, and exceptional service.
             </motion.p>
           </motion.div>
 
@@ -382,7 +460,8 @@ export default function Home() {
               {
                 icon: <Clock className="h-8 w-8 text-white" />,
                 title: "Flexible Rental Plans",
-                description: "Hourly, daily, or weekly rental options to suit your travel needs and budget.",
+                description:
+                  "Hourly, daily, or weekly rental options to suit your travel needs and budget.",
                 gradient: "from-sky-400 to-yellow-400",
               },
             ].map((feature, index) => (
@@ -414,11 +493,14 @@ export default function Home() {
             >
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div>
-                  <h3 className="text-2xl md:text-3xl font-bold mb-4">Discover the beauty of Uttarakhand</h3>
+                  <h3 className="text-2xl md:text-3xl font-bold mb-4">
+                    Discover the beauty of Uttarakhand
+                  </h3>
                   <p className="text-gray-600 mb-6">
-                    Rent a bike or scooter from Mount Auto Point and explore the breathtaking landscapes of Uttarakhand
-                    at your own pace. From the serene hills of Lansdowne to the spiritual vibes of Pauri, our vehicles
-                    are your perfect companions.
+                    Rent a bike or scooter from Mount Auto Point and explore the
+                    breathtaking landscapes of Uttarakhand at your own pace.
+                    From the serene hills of Lansdowne to the spiritual vibes of
+                    Pauri, our vehicles are your perfect companions.
                   </p>
                   <div className="space-y-4">
                     {[
@@ -473,11 +555,15 @@ export default function Home() {
             variants={staggerContainer}
             className="text-center max-w-3xl mx-auto mb-16"
           >
-            <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold mb-4">
+            <motion.h2
+              variants={fadeInUp}
+              className="text-3xl md:text-4xl font-bold mb-4"
+            >
               Our premium vehicles
             </motion.h2>
             <motion.p variants={fadeInUp} className="text-lg text-gray-600">
-              Choose from our wide range of high-quality bikes and scooters for your adventure.
+              Choose from our wide range of high-quality bikes and scooters for
+              your adventure.
             </motion.p>
           </motion.div>
 
@@ -491,42 +577,45 @@ export default function Home() {
             {[
               {
                 name: "Royal Enfield Classic 350",
-                image: "/placeholder.svg?height=300&width=400&text=Royal+Enfield",
+                image: "/assets/img9.jpg",
                 price: "₹1200",
                 type: "Cruiser Bike",
-                features: ["Perfect for mountain roads", "Comfortable for long rides"],
+                features: [
+                  "Perfect for mountain roads",
+                  "Comfortable for long rides",
+                ],
               },
               {
                 name: "Honda Activa",
-                image: "/placeholder.svg?height=300&width=400&text=Honda+Activa",
+                image: "/assets/img2.jpg",
                 price: "₹600",
                 type: "Scooter",
                 features: ["Fuel efficient", "Easy to ride"],
               },
               {
                 name: "Bajaj Pulsar",
-                image: "/placeholder.svg?height=300&width=400&text=Bajaj+Pulsar",
+                image: "/assets/img3.jpg",
                 price: "₹800",
                 type: "Sports Bike",
                 features: ["Powerful engine", "Sporty handling"],
               },
               {
                 name: "TVS Jupiter",
-                image: "/placeholder.svg?height=300&width=400&text=TVS+Jupiter",
+                image: "/assets/img4.jpg",
                 price: "₹550",
                 type: "Scooter",
                 features: ["Comfortable seating", "Good mileage"],
               },
               {
                 name: "Hero Splendor",
-                image: "/placeholder.svg?height=300&width=400&text=Hero+Splendor",
+                image: "/assets/img5.jpg",
                 price: "₹500",
                 type: "Commuter Bike",
                 features: ["Highly reliable", "Excellent fuel efficiency"],
               },
               {
                 name: "Yamaha FZ",
-                image: "/placeholder.svg?height=300&width=400&text=Yamaha+FZ",
+                image: "/assets/img6.jpg",
                 price: "₹900",
                 type: "Sports Bike",
                 features: ["Stylish design", "Smooth performance"],
@@ -543,10 +632,12 @@ export default function Home() {
                     alt={vehicle.name}
                     width={400}
                     height={300}
-                    className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-64 object-contain transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className="absolute top-4 right-4 bg-white rounded-full py-1 px-3 shadow-md">
-                    <span className="font-medium text-sky-600">{vehicle.price}/day</span>
+                    <span className="font-medium text-sky-600">
+                      {vehicle.price}/day
+                    </span>
                   </div>
                 </div>
                 <div className="p-6">
@@ -558,7 +649,10 @@ export default function Home() {
                   </div>
                   <ul className="mb-4 space-y-2">
                     {vehicle.features.map((feature, i) => (
-                      <li key={i} className="flex items-center gap-2 text-sm text-gray-600">
+                      <li
+                        key={i}
+                        className="flex items-center gap-2 text-sm text-gray-600"
+                      >
                         <CheckCircle className="h-4 w-4 text-sky-500" />
                         {feature}
                       </li>
@@ -578,8 +672,185 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="py-20 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden">
+        <div className="container mx-auto px-6">
+          {/* Section Header */}
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-6">
+              Our Amazing Collection
+            </h2>
+            <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+              Discover our stunning range of vehicles through this interactive
+              gallery
+            </p>
+          </motion.div>
+
+          {/* Main Carousel Container */}
+          <div className="relative max-w-6xl mx-auto">
+            <motion.div
+              className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl"
+              initial={{ scale: 0.8, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentIndex}
+                  className="absolute inset-0"
+                  initial={{ opacity: 0, x: 300, scale: 0.8 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: -300, scale: 0.8 }}
+                  transition={{ duration: 0.7, ease: "easeInOut" }}
+                >
+                  <img
+                    src={`/assets/img${currentIndex + 1}.jpg`}
+                    alt={`Gallery Image ${currentIndex + 1}`}
+                    className="w-full h-full object-contain"
+                  />
+                  {/* Overlay Gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+                  {/* Image Info */}
+                  <motion.div
+                    className="absolute bottom-8 left-8 text-white"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5, duration: 0.6 }}
+                  >
+                    <h3 className="text-3xl font-bold mb-2">
+                      Explore Our
+                      {/* {currentIndex + 1} */}
+                    </h3>
+                    <p className="text-lg text-slate-200">
+                      Premium Vehicle Collection
+                    </p>
+                  </motion.div>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Navigation Arrows */}
+              <motion.button
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm p-3 rounded-full text-white hover:bg-white/30 transition-all duration-300"
+                onClick={() =>
+                  setCurrentIndex(currentIndex === 0 ? 8 : currentIndex - 1)
+                }
+                whileHover={{ scale: 1.1, x: -5 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <ChevronLeft size={24} />
+              </motion.button>
+
+              <motion.button
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm p-3 rounded-full text-white hover:bg-white/30 transition-all duration-300"
+                onClick={() =>
+                  setCurrentIndex(currentIndex === 8 ? 0 : currentIndex + 1)
+                }
+                whileHover={{ scale: 1.1, x: 5 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <ChevronRight size={24} />
+              </motion.button>
+
+              {/* Play/Pause Button */}
+              <motion.button
+                className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm p-3 rounded-full text-white hover:bg-white/30 transition-all duration-300"
+                onClick={() => setIsPlaying(!isPlaying)}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                {isPlaying ? <Pause size={20} /> : <Play size={20} />}
+              </motion.button>
+            </motion.div>
+
+            {/* Thumbnail Navigation */}
+            <motion.div
+              className="flex justify-center mt-8 space-x-4 overflow-x-auto pb-4"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
+              {[...Array(9)].map((_, index) => (
+                <motion.button
+                  key={index}
+                  className={`relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-300 ${
+                    currentIndex === index
+                      ? "border-purple-500 ring-2 ring-purple-500/50"
+                      : "border-white/30 hover:border-white/60"
+                  }`}
+                  onClick={() => setCurrentIndex(index)}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <img
+                    src={`/assets/img${index + 1}.jpg`}
+                    alt={`Thumbnail ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                  {currentIndex === index && (
+                    <motion.div
+                      className="absolute inset-0 bg-purple-500/30"
+                      layoutId="activeThumb"
+                      transition={{ duration: 0.3 }}
+                    />
+                  )}
+                </motion.button>
+              ))}
+            </motion.div>
+
+            {/* Dots Indicator */}
+            <motion.div
+              className="flex justify-center mt-6 space-x-3"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              viewport={{ once: true }}
+            >
+              {[...Array(9)].map((_, index) => (
+                <motion.button
+                  key={index}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    currentIndex === index
+                      ? "bg-purple-500 scale-125"
+                      : "bg-white/40 hover:bg-white/60"
+                  }`}
+                  onClick={() => setCurrentIndex(index)}
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 0.9 }}
+                />
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Auto-play Indicator */}
+          {/* <AnimatePresence>
+            {isPlaying && (
+              <motion.div
+                className="fixed bottom-4 right-4 bg-purple-600/90 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm z-50"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+              >
+                Auto-playing...
+              </motion.div>
+            )}
+          </AnimatePresence> */}
+        </div>
+      </section>
+
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 bg-sky-50" ref={testimonialsRef}>
+      <section
+        id="testimonials"
+        className="py-20 bg-sky-50"
+        ref={testimonialsRef}
+      >
         <div className="container mx-auto px-4">
           <motion.div
             initial="hidden"
@@ -587,12 +858,15 @@ export default function Home() {
             variants={staggerContainer}
             className="text-center max-w-3xl mx-auto mb-16"
           >
-            <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold mb-4">
+            <motion.h2
+              variants={fadeInUp}
+              className="text-3xl md:text-4xl font-bold mb-4"
+            >
               What our customers say
             </motion.h2>
             <motion.p variants={fadeInUp} className="text-lg text-gray-600">
-              Don't just take our word for it. Here's what travelers have to say about their Mount Auto Point
-              experience.
+              Don't just take our word for it. Here's what travelers have to say
+              about their Mount Auto Point experience.
             </motion.p>
           </motion.div>
 
@@ -640,12 +914,17 @@ export default function Home() {
                   />
                   <div>
                     <h3 className="font-bold">{testimonial.name}</h3>
-                    <p className="text-sm text-gray-500">{testimonial.location}</p>
+                    <p className="text-sm text-gray-500">
+                      {testimonial.location}
+                    </p>
                   </div>
                 </div>
                 <div className="flex mb-4">
                   {[1, 2, 3, 4, 5].map((i) => (
-                    <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                    <Star
+                      key={i}
+                      className="h-5 w-5 fill-yellow-400 text-yellow-400"
+                    />
                   ))}
                 </div>
                 <p className="text-gray-600 italic">"{testimonial.quote}"</p>
@@ -664,11 +943,15 @@ export default function Home() {
             variants={staggerContainer}
             className="text-center max-w-3xl mx-auto mb-16"
           >
-            <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold mb-4">
+            <motion.h2
+              variants={fadeInUp}
+              className="text-3xl md:text-4xl font-bold mb-4"
+            >
               Simple, transparent pricing
             </motion.h2>
             <motion.p variants={fadeInUp} className="text-lg text-gray-600">
-              Choose the plan that works best for your adventure. No hidden fees or complicated pricing structures.
+              Choose the plan that works best for your adventure. No hidden fees
+              or complicated pricing structures.
             </motion.p>
           </motion.div>
 
@@ -742,17 +1025,52 @@ export default function Home() {
                     Most Popular
                   </div>
                 )}
-                <h3 className={`text-2xl font-bold mb-2 ${plan.popular ? "text-white" : ""}`}>{plan.name}</h3>
-                <p className={`mb-6 ${plan.popular ? "text-white/80" : "text-gray-600"}`}>{plan.description}</p>
+                <h3
+                  className={`text-2xl font-bold mb-2 ${
+                    plan.popular ? "text-white" : ""
+                  }`}
+                >
+                  {plan.name}
+                </h3>
+                <p
+                  className={`mb-6 ${
+                    plan.popular ? "text-white/80" : "text-gray-600"
+                  }`}
+                >
+                  {plan.description}
+                </p>
                 <div className="mb-6">
-                  <span className={`text-4xl font-bold ${plan.popular ? "text-white" : ""}`}>{plan.price}</span>
-                  <span className={`${plan.popular ? "text-white/80" : "text-gray-600"}`}> {plan.period}</span>
+                  <span
+                    className={`text-4xl font-bold ${
+                      plan.popular ? "text-white" : ""
+                    }`}
+                  >
+                    {plan.price}
+                  </span>
+                  <span
+                    className={`${
+                      plan.popular ? "text-white/80" : "text-gray-600"
+                    }`}
+                  >
+                    {" "}
+                    {plan.period}
+                  </span>
                 </div>
                 <ul className="mb-8 space-y-3">
                   {plan.features.map((feature, i) => (
                     <li key={i} className="flex items-center gap-2">
-                      <Shield className={`h-5 w-5 ${plan.popular ? "text-white" : "text-sky-500"}`} />
-                      <span className={`${plan.popular ? "text-white/80" : "text-gray-600"}`}>{feature}</span>
+                      <Shield
+                        className={`h-5 w-5 ${
+                          plan.popular ? "text-white" : "text-sky-500"
+                        }`}
+                      />
+                      <span
+                        className={`${
+                          plan.popular ? "text-white/80" : "text-gray-600"
+                        }`}
+                      >
+                        {feature}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -783,13 +1101,23 @@ export default function Home() {
             variants={staggerContainer}
             className="max-w-3xl mx-auto text-center"
           >
-            <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold mb-4">
+            <motion.h2
+              variants={fadeInUp}
+              className="text-3xl md:text-4xl font-bold mb-4"
+            >
               Ready to start your adventure?
             </motion.h2>
-            <motion.p variants={fadeInUp} className="text-lg text-white/80 mb-8">
-              Contact us now to book your bike or scooter and explore the beautiful landscapes of Uttarakhand.
+            <motion.p
+              variants={fadeInUp}
+              className="text-lg text-white/80 mb-8"
+            >
+              Contact us now to book your bike or scooter and explore the
+              beautiful landscapes of Uttarakhand.
             </motion.p>
-            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 justify-center">
+            <motion.div
+              variants={fadeInUp}
+              className="flex flex-col sm:flex-row gap-4 justify-center"
+            >
               <Link
                 href="tel:+918077686758"
                 className="px-8 py-3 bg-white text-sky-600 font-medium rounded-full hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
@@ -820,11 +1148,15 @@ export default function Home() {
             variants={staggerContainer}
             className="text-center max-w-3xl mx-auto mb-16"
           >
-            <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold mb-4">
+            <motion.h2
+              variants={fadeInUp}
+              className="text-3xl md:text-4xl font-bold mb-4"
+            >
               Get in touch
             </motion.h2>
             <motion.p variants={fadeInUp} className="text-lg text-gray-600">
-              Have questions or ready to book? Reach out to us and we'll get back to you as soon as possible.
+              Have questions or ready to book? Reach out to us and we'll get
+              back to you as soon as possible.
             </motion.p>
           </motion.div>
 
@@ -866,7 +1198,10 @@ export default function Home() {
                     </div>
                     <div>
                       <h4 className="font-medium text-lg mb-1">Phone</h4>
-                      <Link href="tel:+918077686758" className="text-gray-600 hover:text-sky-600 transition-colors">
+                      <Link
+                        href="tel:+918077686758"
+                        className="text-gray-600 hover:text-sky-600 transition-colors"
+                      >
                         080776 86758
                       </Link>
                     </div>
@@ -926,35 +1261,59 @@ export default function Home() {
                     <div className="h-16 w-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <CheckCircle className="h-8 w-8 text-green-600" />
                     </div>
-                    <h4 className="text-xl font-bold text-green-800 mb-2">Message Sent!</h4>
+                    <h4 className="text-xl font-bold text-green-800 mb-2">
+                      Message Sent!
+                    </h4>
                     <p className="text-green-700">
-                      Thank you for your message. Mount bike scooty rental service will respond as soon as possible.
+                      Thank you for your message. Mount bike scooty rental
+                      service will respond as soon as possible.
                     </p>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid md:grid-cols-2 gap-6">
                       <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label
+                          htmlFor="name"
+                          className="block text-sm font-medium text-gray-700 mb-1"
+                        >
                           Your Name
                         </label>
                         <Input id="name" placeholder="John Doe" required />
                       </div>
                       <div>
-                        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label
+                          htmlFor="phone"
+                          className="block text-sm font-medium text-gray-700 mb-1"
+                        >
                           Phone Number
                         </label>
-                        <Input id="phone" placeholder="Your phone number" required />
+                        <Input
+                          id="phone"
+                          placeholder="Your phone number"
+                          required
+                        />
                       </div>
                     </div>
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Email Address
                       </label>
-                      <Input id="email" type="email" placeholder="you@example.com" required />
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="you@example.com"
+                        required
+                      />
                     </div>
                     <div>
-                      <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="message"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Your Message
                       </label>
                       <Textarea
@@ -989,10 +1348,13 @@ export default function Home() {
                 <div className="relative h-10 w-10 bg-gradient-to-br from-sky-500 to-yellow-400 rounded-lg flex items-center justify-center">
                   <Bike className="text-white h-6 w-6" />
                 </div>
-                <span className="text-xl font-bold text-white">Mount Auto Point</span>
+                <span className="text-xl font-bold text-white">
+                  Mount Auto Point
+                </span>
               </Link>
               <p className="text-gray-400 mb-6">
-                Explore Uttarakhand on two wheels with our premium bike and scooter rental service in Kotdwar.
+                Explore Uttarakhand on two wheels with our premium bike and
+                scooter rental service in Kotdwar.
               </p>
               <div className="flex gap-4">
                 <Link
@@ -1023,27 +1385,42 @@ export default function Home() {
               <h3 className="text-lg font-bold mb-6">Quick Links</h3>
               <ul className="space-y-4">
                 <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Home
                   </Link>
                 </li>
                 <li>
-                  <Link href="#features" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="#features"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Features
                   </Link>
                 </li>
                 <li>
-                  <Link href="#testimonials" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="#testimonials"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Testimonials
                   </Link>
                 </li>
                 <li>
-                  <Link href="#pricing" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="#pricing"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Pricing
                   </Link>
                 </li>
                 <li>
-                  <Link href="#contact" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="#contact"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Contact
                   </Link>
                 </li>
@@ -1053,22 +1430,34 @@ export default function Home() {
               <h3 className="text-lg font-bold mb-6">Explore</h3>
               <ul className="space-y-4">
                 <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Kotdwar
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Lansdowne
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Pauri
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Uttarakhand Tourism
                   </Link>
                 </li>
@@ -1087,7 +1476,10 @@ export default function Home() {
                 </li>
                 <li className="flex items-center gap-3">
                   <Phone className="h-5 w-5 text-sky-400" />
-                  <Link href="tel:+918077686758" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="tel:+918077686758"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     080776 86758
                   </Link>
                 </li>
@@ -1107,11 +1499,12 @@ export default function Home() {
           </div>
           <div className="border-t border-gray-800 pt-8">
             <p className="text-gray-500 text-center">
-              © {new Date().getFullYear()} Mount Auto Point. All rights reserved.
+              © {new Date().getFullYear()} Mount Auto Point. All rights
+              reserved.
             </p>
           </div>
         </div>
       </footer>
     </div>
-  )
+  );
 }
