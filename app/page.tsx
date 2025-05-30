@@ -685,7 +685,7 @@ export default function Home() {
           >
             {[
               {
-                name: "Royal Enfield Classic 350",
+                name: "Hero Xpulse 2004v",
                 image: "/assets/img9.jpg",
                 price: "₹1200",
                 type: "Cruiser Bike",
@@ -702,31 +702,31 @@ export default function Home() {
                 features: ["Fuel efficient", "Easy to ride"],
               },
               {
-                name: "Bajaj Pulsar",
-                image: "/assets/img3.jpg",
-                price: "₹800",
-                type: "Sports Bike",
+                name: "Honda Activa 110",
+                image: "/assets/img10.jpg",
+                price: "₹500",
+                type: "Scooter",
                 features: ["Powerful engine", "Sporty handling"],
               },
               {
-                name: "TVS Jupiter",
+                name: "Honda Activa",
                 image: "/assets/img4.jpg",
                 price: "₹550",
                 type: "Scooter",
                 features: ["Comfortable seating", "Good mileage"],
               },
               {
-                name: "Hero Splendor",
+                name: "Honda Activa",
                 image: "/assets/img5.jpg",
                 price: "₹500",
-                type: "Commuter Bike",
+                type: "scooter",
                 features: ["Highly reliable", "Excellent fuel efficiency"],
               },
               {
-                name: "Yamaha FZ",
+                name: "Honda Activa",
                 image: "/assets/img6.jpg",
-                price: "₹900",
-                type: "Sports Bike",
+                price: "₹600",
+                type: "Scooter",
                 features: ["Stylish design", "Smooth performance"],
               },
             ].map((vehicle, index) => (
