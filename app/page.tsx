@@ -711,14 +711,14 @@ export default function Home() {
               {
                 name: "Honda Activa",
                 image: "/assets/img4.jpg",
-                price: "₹550",
+                price: "₹600",
                 type: "Scooter",
                 features: ["Comfortable seating", "Good mileage"],
               },
               {
                 name: "Honda Activa",
                 image: "/assets/img5.jpg",
-                price: "₹500",
+                price: "₹600",
                 type: "scooter",
                 features: ["Highly reliable", "Excellent fuel efficiency"],
               },
