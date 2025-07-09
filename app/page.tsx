@@ -2,7 +2,7 @@
 
 import type React from "react";
 import emailjs from "@emailjs/browser";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle, Instagram, Loader2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -1568,6 +1568,14 @@ export default function Home() {
                 >
                   <Facebook className="h-5 w-5" />
                 </Link>
+
+                  <Link
+                  href="https://www.instagram.com/bike_rental_kotdwara_/?utm_source=qr&igsh=MXJtbnNjdmR0MG54OA%3D%3D#"
+                  className="h-10 w-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-sky-600 transition-colors"
+                >
+                  <Instagram className="h-5 w-5" />
+                </Link>
+                
                 <Link
                   href="https://youtube.com/shorts/jFIRjcLufC8?si=xg0KcDUDXpFHPp9k"
                   target="_blank"
